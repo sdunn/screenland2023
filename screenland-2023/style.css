@@ -1,0 +1,252 @@
+/**
+Theme Name: Screenland 2023
+Author: Shannon Dunn
+Author URI: http://www.juusui.com
+Description: Astra child theme for Screenland Creative
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: screenland-2023
+Template: astra
+*/
+
+/* ---------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------- HEADER / FOOTER --
+------------------------------------------------------------------------------------------------------------------ */
+
+/* header */
+[data-section="section-header-mobile-trigger"] .ast-button-wrap .mobile-menu-toggle-icon .ast-mobile-svg {
+    fill: #ecbc47 !important;
+}
+
+.site-header .ast-header-sticked {
+    background-color: #000000cc;
+}
+
+/* footer */
+.site-below-footer-wrap[data-section="section-below-footer-builder"] .ast-builder-grid-row, 
+.site-below-footer-wrap[data-section="section-below-footer-builder"] .site-footer-section {
+    align-items: center;
+}
+
+@media (max-width: 1350px) {
+    .footer-social-inner-wrap {
+        padding-right: 60px;
+    }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------- HOME SLIDER --
+------------------------------------------------------------------------------------------------------------------ */
+
+.sl-home-slider .eae-slide-inner {
+    background-image: url(/wp-content/uploads/2023/06/1px-slider-screen.png);
+    background-position: 0 0;
+    background-repeat: repeat;
+    background-size: auto;
+ }
+
+.sl-home-slider .eae-slide-inner .eae-slide-content {
+    width: 1200px;
+}
+
+.sl-home-slider .eae-slide-button span.eae-slide-btn::after {
+    color: #ecbc47;
+    content: '\f061';
+    font-family: 'Font Awesome 6 Pro';
+    font-size: 15px;
+    font-weight: 600;
+    padding-left: 10px;
+    position: relative;
+    transition: padding 0.5s ease;
+}
+
+.sl-home-slider .eae-slide-button:hover span.eae-slide-btn::after {
+    padding-left: 15px;
+}
+
+.eae-thumb-container.swiper-container {
+    bottom: 6px;
+    left: calc(50% - 600px);
+    max-width: 100%;
+    position: absolute;
+    width: 1200px !important;
+}
+
+.sl-home-slider .eae-swiper-outer-wrapper .eae-gallery-thumbs .eae-thumb-slide {
+    opacity: 1;
+}
+
+.sl-home-slider .eae-thumb-slide {
+    cursor: pointer;
+}
+
+.sl-home-slider .eae-slider-nav-button .e-font-icon-svg {
+    fill: #ffffff;
+    opacity: .5;
+    transition: opacity 0.5s ease;
+}
+
+.sl-home-slider .eae-slider-nav-button .e-font-icon-svg:hover {
+    opacity: 1;
+}
+
+@media (min-width: 1250px) {
+    .sl-home-slider .eae-slider-nav-button {
+        height: 50px;
+    }
+}
+
+@media (max-width: 1199px) {
+    .sl-home-slider .eae-thumb-container.swiper-container {
+        left: calc(50% - 50vw);
+        padding: 0 15px;
+    }
+}
+
+
+/* ---------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------- POST GRID --
+------------------------------------------------------------------------------------------------------------------ */
+
+.sl-post-grid  .e-con.e-flex > .e-con-inner {
+    position: relative;
+}
+
+.sl-post-grid .eae-popup-link {
+    cursor: url(/wp-content/uploads/2023/06/cursor-play.svg), pointer;
+    text-align: center;
+    width: 100%;
+}
+
+.sl-post-grid .eae-pop-btn-type-image a.eae-popup-link.icon-position-before {
+    position: relative;
+}
+
+.sl-post-grid .eae-pop-btn-type-image a.eae-popup-link.icon-position-before::after {
+    background: rgb(0,0,0,0.2);
+    background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 60%);
+    content: '';
+    display: block;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+
+.sl-post-grid .e-con > .e-con-inner > .elementor-widget.eae-pop-btn-type-text {
+    bottom: 20px;
+    display: block;
+    max-width: 100%;
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+}
+
+.sl-post-grid .eae-popup-link .eae-popup-btn-text {
+    width: 100%;
+}
+
+.sl-post-grid .e-con > .e-con-inner > .elementor-widget.elementor-widget-heading {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    z-index: 1;
+}
+
+.sl-post-grid .e-con > .e-con-inner > .elementor-widget.elementor-widget-heading .elementor-widget-container {
+    display: inline-block;
+    padding: 3px 5px;
+    width: auto;
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------- POPUPS --
+------------------------------------------------------------------------------------------------------------------ */
+
+.eae-popup .mfp-inline-holder .mfp-content {
+    background-color: #10151d;
+}
+
+.ae-element-post-content p {
+    display: none;
+}
+
+.mfp-zoom-in.mfp-ready.mfp-bg {
+    opacity: .94 !important;
+}
+
+@media (max-width: 1199px) {
+    .sl-video-modal {
+        flex-direction: column !important;
+    }
+    .sl-video-modal > .elementor-element {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .sl-pup-content .ast-oembed-container {
+        min-height: 400px !important;
+    }
+
+    .sl-pup-content .ast-oembed-container {
+        min-height: 400px !important;
+    }
+}
+
+
+/* ---------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------- MISC GLOBAL --
+------------------------------------------------------------------------------------------------------------------ */
+.sl-related-head {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 24px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.sl-related-head a {
+    color: #fff;
+}
+
+@media (min-width: 768px) {
+    .sl-single-related .ae-post-collection {
+        align-items: flex-start;
+        display: flex !important;
+        gap: 0 !important;
+        justify-content: center;
+    }
+
+    .sl-single-related .ae-post-collection .ae-post-item {
+        max-width: 100%;
+        width: 325px;
+    }
+}
+@media (max-width: 767px) {
+    .sl-video-block,
+    .sl-video-block .elementor-element {
+        display: block !important;
+    }
+
+    .e-con.e-con>.e-con-inner>.elementor-widget.sl-single-related,
+    .elementor.elementor .e-con>.elementor-widget.sl-related {
+        margin: auto;
+        max-width: 100%;
+        width: 325px;
+    }
+
+    .sl-single-related .e-con.e-flex > .e-con-inner,
+    .sl-related .e-con.e-flex > .e-con-inner {
+        display: block;
+    }
+
+    .sl-single-related .e-con.e-con > .e-con-inner > .elementor-widget,
+    .sl-related .e-con.e-con > .e-con-inner > .elementor-widget {
+        padding: 5px;
+    }
+
+    .sl-related-container.e-con > .e-con-inner {
+        display: block;
+    }
+}
