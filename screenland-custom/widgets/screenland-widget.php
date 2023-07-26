@@ -1,4 +1,7 @@
 <?php
+
+use \Elementor\Controls_Manager;
+
 class Screenland_Widget extends \Elementor\Widget_Base {
 
 	public function get_name() {
@@ -21,190 +24,127 @@ class Screenland_Widget extends \Elementor\Widget_Base {
 		return [ 'screenland' ];
 	}
 
+	protected function _register_controls() {
+        // Add a control to toggle the display of the 'portfolio_types' custom taxonomy
+        $this->start_controls_section(
+            'section_settings',
+            [
+                'label' => esc_html__('Settings', 'elementor-addon'),
+            ]
+        );
+
+        $this->add_control(
+            'show_portfolio_types',
+            [
+                'label' => esc_html__('Display Portfolio Types', 'elementor-addon'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => esc_html__('Show', 'elementor-addon'),
+                'label_off' => esc_html__('Hide', 'elementor-addon'),
+                'return_value' => 'yes',
+                'default' => 'yes',
+            ]
+        );
+
+        $this->add_control(
+            'page_slider',
+            [
+                'label' => esc_html__('What page is slider on?', 'elementor-addon'),
+                'type' => Controls_Manager::SELECT,
+                'options' => [
+                    'home' => esc_html__('Home', 'elementor-addon'),
+                    'av' => esc_html__('AV', 'elementor-addon'),
+                    'social' => esc_html__('Social', 'elementor-addon'),
+                    'graphics' => esc_html__('Graphics', 'elementor-addon'),
+                ],
+                'default' => 'home',
+            ]
+        );
+
+		$this->add_control(
+			'number_of_posts',
+			[
+				'label' => esc_html__('Number of Posts', 'elementor-addon'),
+				'type' => Controls_Manager::NUMBER,
+				'default' => 5,
+			]
+		);
+
+        $this->end_controls_section();
+    }
+
 	protected function render() {
-		?>
+        $settings = $this->get_settings_for_display();
+        $page_slider = $settings['page_slider'];
 
-<!-- Swiper -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-<style>
-html,
-body {
-	position: relative;
-	height: 100%;
-}
+        // Map the page_slider value to the corresponding custom field name
+        $custom_field_name = '';
+        switch ($page_slider) {
+            case 'home':
+                $custom_field_name = 'add_to_home_page_slider';
+                break;
+            case 'av':
+                $custom_field_name = 'add_to_av_page_slider';
+                break;
+            case 'social':
+                $custom_field_name = 'add_to_social_page_slider';
+                break;
+            case 'graphics':
+                $custom_field_name = 'add_to_graphics_page_slider';
+                break;
+        }
 
-body {
-	background: #eee;
-	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-	font-size: 14px;
-	color: #000;
-	margin: 0;
-	padding: 0;
-}
+        $args = array(
+            'post_type' => 'scld_portfolio',
+            'posts_per_page' => $settings['number_of_posts'], // Control for the number of posts to display
+            'orderby' => 'title', // Order the posts by title. You can change this to any other field.
+            'order' => 'ASC', // Order the posts in ascending order. Change to 'DESC' for descending order.
+            'meta_query' => array(
+                array(
+                    'key' => $custom_field_name,
+                    'value' => '1',
+                    'compare' => '=',
+                ),
+            ),
+        );
 
-.swiper {
-	width: 100%;
-	height: 100%;
-}
+        $query = new WP_Query($args);
 
-.swiper-slide {
-	text-align: center;
-	font-size: 18px;
-	background: #fff;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
+                $query->the_post();
+                $page_thumb_url = get_the_post_thumbnail_url($query->ID, 'full');
+                $permalink = get_the_permalink();
 
-.swiper-slide img {
-	display: block;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
+                // Check if we should display the 'portfolio-types' custom taxonomy
+                $show_portfolio_types = $settings['show_portfolio_types'] === 'yes';
 
-body {
-	background: #000;
-	color: #000;
-}
+                // Retrieve the terms for the 'portfolio-types' taxonomy if needed
+                $portfolio_types_list = '';
+                if ($show_portfolio_types) {
+                    $portfolio_types = get_the_terms($query->ID, 'portfolio_types');
+                    if ($portfolio_types && !is_wp_error($portfolio_types)) {
+                        $term_names = array();
+                        foreach ($portfolio_types as $term) {
+                            $term_names[] = $term->name;
+                        }
+                        $portfolio_types_list = implode(', ', $term_names);
+                    }
+                }
+                ?>
 
-.swiper {
-	width: 100%;
-	height: 300px;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.swiper-slide {
-	background-size: cover;
-	background-position: center;
-}
-
-.mySwiper2 {
-	height: 80%;
-	width: 100%;
-}
-
-.mySwiper {
-	height: 20%;
-	box-sizing: border-box;
-	padding: 10px 0;
-}
-
-.mySwiper .swiper-slide {
-	width: 25%;
-	height: 100%;
-	opacity: 0.4;
-}
-
-.mySwiper .swiper-slide-thumb-active {
-	opacity: 1;
-}
-
-.swiper-slide img {
-	display: block;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
-</style>
-
-<div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiper2">
-	<div class="swiper-wrapper">
-		<div class="swiper-slide">
-        	<img src="https://swiperjs.com/demos/images/nature-1.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-2.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-3.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-4.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-5.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-6.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-7.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-8.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-9.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-10.jpg" />
-		</div>
-    </div>
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-</div>
-<div thumbsSlider="" class="swiper mySwiper">
-    <div class="swiper-wrapper">
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-1.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-2.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-3.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-4.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-5.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-6.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-7.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-8.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-9.jpg" />
-		</div>
-		<div class="swiper-slide">
-			<img src="https://swiperjs.com/demos/images/nature-10.jpg" />
-		</div>
-	</div>
-</div>
-
-<!-- Swiper JS -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-
-<!-- Initialize Swiper -->
-<script>
-	var swiper = new Swiper(".mySwiper", {
-		loop: true,
-		spaceBetween: 10,
-		slidesPerView: 4,
-		freeMode: true,
-		watchSlidesProgress: true,
-	});
-	var swiper2 = new Swiper(".mySwiper2", {
-		loop: true,
-		spaceBetween: 10,
-		navigation: {
-		nextEl: ".swiper-button-next",
-		prevEl: ".swiper-button-prev",
-		},
-		thumbs: {
-		swiper: swiper,
-		},
-	});
-</script>
-
-		<?php
+                <a href="<?php echo esc_url($permalink); ?>">
+                    <h1><?php the_title(); ?></h1>
+                    <img src="<?php echo $page_thumb_url; ?>">
+                    <?php if ($show_portfolio_types && !empty($portfolio_types_list)) : ?>
+                        <p>Portfolio Types: <?php echo $portfolio_types_list; ?></p>
+                    <?php endif; ?>
+                </a>
+	
+			<?php
+			}
+			wp_reset_postdata();
+		} else {
+			echo 'No portfolio items found.';
+		}
 	}
 }
