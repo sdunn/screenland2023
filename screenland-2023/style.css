@@ -10,6 +10,10 @@ Text Domain: screenland-2023
 Template: astra
 */
 
+body {
+    font-family: 'Outfit',sans-serif;
+}
+
 /* ---------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------- HEADER / FOOTER --
 ------------------------------------------------------------------------------------------------------------------ */
@@ -33,6 +37,122 @@ Template: astra
     .footer-social-inner-wrap {
         padding-right: 60px;
     }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------- SLIDER --
+------------------------------------------------------------------------------------------------------------------ */
+
+/* slider main */
+.swiper-slide.sl-slide {
+    align-items: stretch;
+    justify-content: stretch;
+    min-height: 600px;
+    padding-bottom: 125px;
+}
+
+.sl-slider-link {
+    cursor: url(/wp-content/uploads/2023/06/cursor-play.svg), pointer;
+    display: block;
+    margin: 0 5%;
+    width: 90%;
+}
+
+.sl-slide-wrap {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    margin: auto;
+    max-width: 100%;
+    width: 1200px;
+}
+
+.entry-content .sl-slider-portfolio-type {
+    color: #fff;
+    font-size: 30px;
+    font-weight: 200;
+    text-transform: uppercase;
+}
+
+.entry-content .sl-slider-cta {
+    color: #fff;
+    display: block;
+    font-family: 'Outfit',sans-serif;
+    font-size: 21px;
+    font-weight: 200;
+    position: relative;
+}
+
+.entry-content .sl-slider-cta::after {
+    color: #ecbc47;
+    content: '\f061';
+    font-family: 'Font Awesome 6 Pro';
+    font-size: 15px;
+    font-weight: 600;
+    padding-left: 10px;
+    position: relative;
+    transition: padding .5s ease;
+}
+
+.entry-content .sl-slider-cta:hover::after {
+    padding-left: 15px;
+}
+
+@media (max-width: 1024px) {
+    .sl-slide-wrap {
+        align-items: center;
+    }
+
+    .entry-content .sl-slider-portfolio-type {
+        font-size: 21px;
+    }
+}
+
+@media (max-width: 767px) {
+    .sl-slider-link {
+        margin: 0 10%;
+        width: 80%;
+    }
+}
+
+/* arrow nav */
+
+.swiper-button-prev {
+    background-image: url(/wp-content/uploads/2023/07/icon-angle-left.svg);
+}
+
+.swiper-button-next {
+    background-image: url(/wp-content/uploads/2023/07/icon-angle-right.svg);
+}
+
+/* slider thumbnails */
+
+.swiper.sl-slider-thumbs {
+    bottom: 0;
+    position: absolute;
+}
+
+.mySwiper.sl-slider-thumbs .swiper-slide {
+    background-color: #10151d;
+}
+
+.mySwiper.sl-slider-thumbs .swiper-slide .sl-slider-thumb {
+    border: 1px solid transparent;
+    cursor: pointer;
+    opacity: 0.5;
+    transform: 750ms ease;
+}
+
+.mySwiper.sl-slider-thumbs .swiper-slide:hover .sl-slider-thumb {
+    border: 1px solid #ecbc47;
+    opacity: 1;
+}
+
+.mySwiper.sl-slider-thumbs .swiper-slide-thumb-active .sl-slider-thumb {
+    border: 1px solid #ecbc47;
+    opacity: 1;
 }
 
 /* ---------------------------------------------------------------------------------------------------------------
