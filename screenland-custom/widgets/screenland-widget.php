@@ -99,8 +99,8 @@ class Screenland_Widget extends \Elementor\Widget_Base {
         $args = array(
             'post_type' => 'scld_portfolio',
             'posts_per_page' => $settings['number_of_posts'], // Control for the number of posts to display
-            'orderby' => 'title', // Order the posts by title. You can change this to any other field.
-            'order' => 'ASC', // Order the posts in ascending order. Change to 'DESC' for descending order.
+            'orderby' => 'menu_order',
+            'order' => 'DESC',
             'meta_query' => array(
                 array(
                     'key' => $custom_field_name,
@@ -270,13 +270,15 @@ class Screenland_Widget extends \Elementor\Widget_Base {
 </div>
 
 <!-- Swiper thumb nav -->
-<div thumbsSlider="" class="swiper mySwiper sl-slider-thumbs">
-  <div class="swiper-wrapper">
-  <?php foreach( $thumbnail_urls as $thumbnail_url ): ?>
-    <div class="swiper-slide">
-      <img class="sl-slider-thumb" src="<?php echo $thumbnail_url; ?>)">
+<div class="sl-slider-thumbs-wrapper">
+  <div thumbsSlider="" class="swiper mySwiper sl-slider-thumbs">
+    <div class="swiper-wrapper">
+    <?php foreach( $thumbnail_urls as $thumbnail_url ): ?>
+      <div class="swiper-slide">
+        <img class="sl-slider-thumb" src="<?php echo $thumbnail_url; ?>)">
+      </div>
+    <?php endforeach; ?>
     </div>
-  <?php endforeach; ?>
   </div>
 </div>
 

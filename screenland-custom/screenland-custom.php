@@ -171,3 +171,32 @@ function register_screenland_widget( $widgets_manager ) {
 
 }
 add_action( 'elementor/widgets/register', 'register_screenland_widget' );
+
+//FILTER POST BLOCKS ADVANCED
+function scld_thumbnails_home_filter($query_args){
+	$query_args['meta_key'] = 'show_in_thumbnails';
+	$query_args['meta_value'] = 1;
+	return $query_args;
+}
+add_filter('scld_home_filter', 'scld_thumbnails_home_filter');
+
+function scld_thumbnails_av_filter($query_args){
+	$query_args['meta_key'] = 'show_in_thumbnails_av';
+	$query_args['meta_value'] = 1;
+	return $query_args;
+}
+add_filter('scld_av_filter', 'scld_thumbnails_av_filter');
+
+function scld_thumbnails_social_filter($query_args){
+	$query_args['meta_key'] = 'show_in_thumbnails_social';
+	$query_args['meta_value'] = 1;
+	return $query_args;
+}
+add_filter('scld_social_filter', 'scld_thumbnails_social_filter');
+
+function scld_thumbnails_graphics_filter($query_args){
+	$query_args['meta_key'] = 'show_in_thumbnails_graphics';
+	$query_args['meta_value'] = 1;
+	return $query_args;
+}
+add_filter('scld_graphics_filter', 'scld_thumbnails_graphics_filter');
