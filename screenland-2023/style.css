@@ -14,6 +14,12 @@ body {
     font-family: 'Outfit',sans-serif;
 }
 
+@media (max-width: 1024px) {
+    .sl-hide-break {
+        display: none;
+    }
+}
+
 /* ---------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------- HEADER / FOOTER --
 ------------------------------------------------------------------------------------------------------------------ */
@@ -68,6 +74,10 @@ body {
     margin: auto;
     max-width: 100%;
     width: 1200px;
+}
+
+.swiper-slide .sl-slider-title {
+    text-align: left;
 }
 
 .entry-content .sl-slider-portfolio-type {
@@ -133,10 +143,17 @@ body {
 
 .swiper-button-prev {
     background-image: url(/wp-content/uploads/2023/07/icon-angle-left.svg);
+    background-repeat: no-repeat;
 }
 
 .swiper-button-next {
     background-image: url(/wp-content/uploads/2023/07/icon-angle-right.svg);
+    background-repeat: no-repeat;
+}
+
+.swiper-button-next:after, 
+.swiper-button-prev:after {
+    font-size: 0 !important;
 }
 
 /* slider thumbnails */

@@ -55,6 +55,9 @@ class Screenland_Widget extends \Elementor\Widget_Base {
                 'options' => [
                     'home' => esc_html__('Home', 'elementor-addon'),
                     'av' => esc_html__('AV', 'elementor-addon'),
+                    'broadway' => esc_html__('Broadway', 'elementor-addon'),
+                    'creative_content' => esc_html__('Creative Content', 'elementor-addon'),
+                    'graphics_dooh' => esc_html__('Graphics/DOOH', 'elementor-addon'),
                     'social' => esc_html__('Social', 'elementor-addon'),
                     'graphics' => esc_html__('Graphics', 'elementor-addon'),
                 ],
@@ -79,6 +82,21 @@ class Screenland_Widget extends \Elementor\Widget_Base {
         $settings = $this->get_settings_for_display();
         $page_slider = $settings['page_slider'];
 
+        echo '<pre style="display: none;">';
+echo 'page_slider: ';
+var_dump($page_slider);
+
+echo 'ACF field on matching posts: ';
+$test_posts = get_posts([
+    'post_type'      => 'scld_portfolio',
+    'posts_per_page' => -1,
+    'meta_key'       => 'add_to_graphics_dooh_page_slider',
+    'meta_value'     => '1',
+]);
+
+echo count($test_posts) . ' posts found';
+echo '</pre>';
+
         // Map the page_slider value to the corresponding custom field name
         $custom_field_name = '';
         switch ($page_slider) {
@@ -93,6 +111,17 @@ class Screenland_Widget extends \Elementor\Widget_Base {
                 break;
             case 'graphics':
                 $custom_field_name = 'add_to_graphics_page_slider';
+                break;
+            case 'broadway':
+    		        $custom_field_name = 'add_to_broadway_page_slider';
+    		        break;
+	          case 'creative_content':
+	          case 'creative-content':
+    		        $custom_field_name = 'add_to_creative_content_page_slider';
+    		        break;
+            case 'graphics_dooh':
+            case 'graphics-dooh':
+                $custom_field_name = 'add_to_graphics_dooh_page_slider';
                 break;
         }
 
@@ -275,7 +304,7 @@ class Screenland_Widget extends \Elementor\Widget_Base {
     <div class="swiper-wrapper">
     <?php foreach( $thumbnail_urls as $thumbnail_url ): ?>
       <div class="swiper-slide">
-        <img class="sl-slider-thumb" src="<?php echo $thumbnail_url; ?>)">
+        <img class="sl-slider-thumb" src="<?php echo $thumbnail_url; ?>">
       </div>
     <?php endforeach; ?>
     </div>

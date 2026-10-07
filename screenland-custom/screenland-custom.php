@@ -200,3 +200,25 @@ function scld_thumbnails_graphics_filter($query_args){
 	return $query_args;
 }
 add_filter('scld_graphics_filter', 'scld_thumbnails_graphics_filter');
+
+function scld_thumbnails_broadway_filter($query_args){
+        $query_args['meta_key'] = 'show_in_thumbnails_broadway';
+        $query_args['meta_value'] = 1;
+        return $query_args;
+}
+add_filter('scld_broadway_filter', 'scld_thumbnails_broadway_filter');
+
+function scld_thumbnails_creative_content_filter($query_args){
+        $query_args['meta_key'] = 'show_in_thumbnails_creative_content';
+        $query_args['meta_value'] = 1;
+        return $query_args;
+}
+add_filter('scld_creative_content_filter', 'scld_thumbnails_creative_content_filter');
+
+function scld_thumbnails_graphics_dooh_filter($query_args){
+    $query_args['meta_key'] = 'show_in_thumbnails_graphics_dooh';
+    $query_args['meta_value'] = 1;
+    return $query_args;
+}
+
+add_filter('scld_graphics_dooh_filter', 'scld_thumbnails_graphics_dooh_filter');
