@@ -222,3 +222,11 @@ function scld_thumbnails_graphics_dooh_filter($query_args){
 }
 
 add_filter('scld_graphics_dooh_filter', 'scld_thumbnails_graphics_dooh_filter');
+
+function scld_thumbnails_animation_filter($query_args){
+    $query_args['meta_key'] = 'show_in_thumbnails_animation';
+    $query_args['meta_value'] = 1;
+    return $query_args;
+}
+
+add_filter('scld_animation_filter', 'scld_thumbnails_animation_filter');

@@ -54,6 +54,7 @@ class Screenland_Widget extends \Elementor\Widget_Base {
                 'type' => Controls_Manager::SELECT,
                 'options' => [
                     'home' => esc_html__('Home', 'elementor-addon'),
+    				'animation' => esc_html__('Animation', 'elementor-addon'),
                     'av' => esc_html__('AV', 'elementor-addon'),
                     'broadway' => esc_html__('Broadway', 'elementor-addon'),
                     'creative_content' => esc_html__('Creative Content', 'elementor-addon'),
@@ -103,6 +104,9 @@ echo '</pre>';
             case 'home':
                 $custom_field_name = 'add_to_home_page_slider';
                 break;
+			case 'animation':
+    			$custom_field_name = 'add_to_animation_page_slider';
+    			break;
             case 'av':
                 $custom_field_name = 'add_to_av_page_slider';
                 break;
