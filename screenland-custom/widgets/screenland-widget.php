@@ -83,21 +83,6 @@ class Screenland_Widget extends \Elementor\Widget_Base {
         $settings = $this->get_settings_for_display();
         $page_slider = $settings['page_slider'];
 
-        echo '<pre style="display: none;">';
-echo 'page_slider: ';
-var_dump($page_slider);
-
-echo 'ACF field on matching posts: ';
-$test_posts = get_posts([
-    'post_type'      => 'scld_portfolio',
-    'posts_per_page' => -1,
-    'meta_key'       => 'add_to_graphics_dooh_page_slider',
-    'meta_value'     => '1',
-]);
-
-echo count($test_posts) . ' posts found';
-echo '</pre>';
-
         // Map the page_slider value to the corresponding custom field name
         $custom_field_name = '';
         switch ($page_slider) {
@@ -133,7 +118,7 @@ echo '</pre>';
             'post_type' => 'scld_portfolio',
             'posts_per_page' => $settings['number_of_posts'], // Control for the number of posts to display
             'orderby' => 'menu_order',
-            'order' => 'DESC',
+            'order' => 'ASC',
             'meta_query' => array(
                 array(
                     'key' => $custom_field_name,
@@ -143,19 +128,87 @@ echo '</pre>';
             ),
         );
 
-        // Store thumbnail URLs for thumb nav
-        $thumbnail_urls = array();
+        // APTO: Give each page-specific slider the matching Portfolio Type context.
+        // The ACF field above still controls which posts are included.
+        // Home is intentionally omitted so it uses the global Portfolio order.
+        $slider_term_slugs = array(
+            'animation'        => 'animation',
+            'broadway'         => 'broadway',
+            'creative_content' => 'creative-content',
+            'creative-content' => 'creative-content',
+            'social'           => 'social',
+            'graphics'         => 'graphics',
+        );
 
-        $query = new WP_Query($args);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                $page_thumb_url = get_the_post_thumbnail_url($query->ID, 'full');
-                
-                // Add the thumbnail URL to the array
-                $thumbnail_urls[] = $page_thumb_url;
+        if (isset($slider_term_slugs[$page_slider])) {
+            $portfolio_type_term = get_term_by(
+                'slug',
+                $slider_term_slugs[$page_slider],
+                'portfolio_types'
+            );
+
+            if ($portfolio_type_term instanceof \WP_Term) {
+                $args['tax_query'] = array(
+                    array(
+                        'taxonomy' => 'portfolio_types',
+                        'field'    => 'term_id',
+                        'terms'    => array((int) $portfolio_type_term->term_id),
+                        'operator' => 'IN',
+                    ),
+                );
             }
-          }
+            // If the term slug doesn't exist, keep the prior ACF-only behavior.
+            // Verify term slugs with: wp term list portfolio_types --fields=name,slug,term_id
+        }
+
+        // AV and Graphics/DOOH combine two Portfolio Type terms each.
+        // These are term NAMES (not guessed slugs), as specified for Screenland.
+        // Both terms must resolve before adding the restriction, so a missing
+        // term never silently removes items from an existing slider.
+        $combined_slider_terms = array(
+            'av'            => array('Trailer', 'TV'),
+            'graphics_dooh' => array('DOOH', 'Graphics'),
+            'graphics-dooh' => array('DOOH', 'Graphics'),
+        );
+
+        if (isset($combined_slider_terms[$page_slider])) {
+            $combined_names = $combined_slider_terms[$page_slider];
+            $combined_ids   = array();
+
+            foreach ($combined_names as $term_name) {
+                $term = get_term_by('name', $term_name, 'portfolio_types');
+
+                // Also support a matching slug if the display name differs.
+                if (!($term instanceof \WP_Term)) {
+                    $term = get_term_by('slug', sanitize_title($term_name), 'portfolio_types');
+                }
+
+                if (!($term instanceof \WP_Term)) {
+                    $combined_ids = array();
+                    break;
+                }
+
+                $combined_ids[] = (int) $term->term_id;
+            }
+
+            if (count(array_unique($combined_ids)) === count($combined_names)) {
+                // IN means either term, not both. Keep the existing ACF filter.
+                $args['tax_query'] = array(
+                    array(
+                        'taxonomy' => 'portfolio_types',
+                        'field'    => 'term_id',
+                        'terms'    => $combined_ids,
+                        'operator' => 'IN',
+                    ),
+                );
+            }
+        }
+
+        // Run the query once. The main slider loop below also collects
+        // thumbnail URLs for the thumb nav, which is output after it.
+        $query = new WP_Query($args);
+        $thumbnail_urls = array();
+        $show_portfolio_types = $settings['show_portfolio_types'] === 'yes';
 
 ?>
 
@@ -239,12 +292,6 @@ echo '</pre>';
   }
 </style>
 
-<?php
-
-        $query = new WP_Query($args);
-
-?>
-
 <!-- Swiper container -->
 <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiper2">
     <div class="swiper-wrapper">
@@ -255,16 +302,17 @@ echo '</pre>';
         if ($query->have_posts()) {
             while ($query->have_posts()) {
                 $query->the_post();
-                $page_thumb_url = get_the_post_thumbnail_url($query->ID, 'full');
+                $post_id = get_the_ID();
+                $page_thumb_url = get_the_post_thumbnail_url($post_id, 'full');
                 $permalink = get_the_permalink();
 
-                // Check if we should display the 'portfolio-types' custom taxonomy
-                $show_portfolio_types = $settings['show_portfolio_types'] === 'yes';
+                // Collect the thumbnail URL for the thumb nav
+                $thumbnail_urls[] = $page_thumb_url;
 
-                // Retrieve the terms for the 'portfolio-types' taxonomy if needed
+                // Retrieve the terms for the 'portfolio_types' taxonomy if needed
                 $portfolio_types_list = '';
                 if ($show_portfolio_types) {
-                    $portfolio_types = get_the_terms($query->ID, 'portfolio_types');
+                    $portfolio_types = get_the_terms($post_id, 'portfolio_types');
                     if ($portfolio_types && !is_wp_error($portfolio_types)) {
                         $term_names = array();
                         foreach ($portfolio_types as $term) {
@@ -276,11 +324,11 @@ echo '</pre>';
 ?>
 
 <!-- start Swiper slides -->
-    <div class="swiper-slide sl-slide" style="background-image: url(/wp-content/uploads/2023/06/1px-slider-screen.png), url(<?php echo $page_thumb_url; ?>)">
+    <div class="swiper-slide sl-slide" style="background-image: url(/wp-content/uploads/2023/06/1px-slider-screen.png), url(<?php echo esc_url($page_thumb_url); ?>)">
       <a class="sl-slider-link" href="<?php echo esc_url($permalink); ?>">
         <div class="sl-slide-wrap">
           <?php if ($show_portfolio_types && !empty($portfolio_types_list)) : ?>
-            <h3 class="sl-slider-portfolio-type"><?php echo $portfolio_types_list; ?></h3>
+            <h3 class="sl-slider-portfolio-type"><?php echo esc_html($portfolio_types_list); ?></h3>
           <?php endif; ?>
           <h1 class="sl-slider-title"><?php the_title(); ?></h1>
           <div class="sl-slider-cta">Watch Now</div>
@@ -308,7 +356,7 @@ echo '</pre>';
     <div class="swiper-wrapper">
     <?php foreach( $thumbnail_urls as $thumbnail_url ): ?>
       <div class="swiper-slide">
-        <img class="sl-slider-thumb" src="<?php echo $thumbnail_url; ?>">
+        <img class="sl-slider-thumb" src="<?php echo esc_url($thumbnail_url); ?>">
       </div>
     <?php endforeach; ?>
     </div>
